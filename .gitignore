@@ -28,17 +28,14 @@ ENV/
 data/
 data/**/*
 
-# Heavy model weights and checkpoints (keep class_names.json)
-artifacts/models/*.keras
-artifacts/models/*.h5
-artifacts/models/*.onnx
+# Checkpoints and logs (keep release models)
 artifacts/checkpoints/
 artifacts/logs/
 *.weights.h5
 
-# Keep artifacts directory structure
+# Keep artifacts directory and models
 !artifacts/
 !artifacts/models/
-!artifacts/models/class_names.json
+!artifacts/models/*
 !artifacts/plots/
 !artifacts/reports/
