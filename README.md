@@ -6,7 +6,7 @@
 [![Dataset](https://img.shields.io/badge/Dataset-Stanford%20Dogs%20(120%20Breeds)-blue)](https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset)
 [![Gradio](https://img.shields.io/badge/UI-Gradio%206-orange?style=flat&logo=gradio&logoColor=white)](https://gradio.app/)
 [![ONNX](https://img.shields.io/badge/Format-ONNX%20%2B%20CoreML-005CED?style=flat&logo=onnx&logoColor=white)](https://onnx.ai/)
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 An end-to-end deep learning system for fine-grained image classification across all **120 dog breeds** in the **Stanford Dogs Dataset** (20,580 images). Optimized natively for **macOS Apple Silicon (M-series GPUs via `tensorflow-metal` and CoreML via `onnxruntime`)** with a two-stage transfer learning pipeline, **Grad-CAM** visual explainability, an interactive **Gradio Web App**, a full-featured **CLI**, and a comprehensive **Jupyter Notebook**.
 
 ---
@@ -241,6 +241,10 @@ $$L_{\text{Grad-CAM}}^c = \text{ReLU}\left( \sum_{k} \alpha_k^c A^k \right)$$
 - **Stanford Dogs Dataset**: Aditya Khosla, Nityananda Jayadevaprakash, Bangpeng Yao, and Li Fei-Fei. *Novel Dataset for Fine-Grained Image Categorization*. First Workshop on Fine-Grained Visual Categorization (FGVC), IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2011.
 - **Dataset Link**: [Kaggle - Stanford Dogs Dataset](https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset)
 
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 ---
 
 ## 👨‍💻 Author

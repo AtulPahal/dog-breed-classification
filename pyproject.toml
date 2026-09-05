@@ -3,6 +3,7 @@ name = "dog-breed-classification"
 version = "0.1.0"
 description = "Dog Breed Classification on Stanford Dogs Dataset with Transfer Learning, Grad-CAM, and Apple Metal GPU acceleration"
 readme = "README.md"
+license = "MIT"
 authors = [
     { name = "AtulPahal", email = "atulpahal@gmail.com" }
 ]
