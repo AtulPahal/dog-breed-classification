@@ -1,0 +1,62 @@
+{
+  "total_test_samples": 3088,
+  "num_classes": 120,
+  "top_1_accuracy": 0.915479274611399,
+  "top_5_accuracy": 0.9944948186528497,
+  "macro_precision": 0.9181807884887832,
+  "macro_recall": 0.9133139854833281,
+  "macro_f1": 0.9136411592853853,
+  "weighted_f1": 0.9147517406863522,
+  "top_10_confusions": [
+    {
+      "true_breed": "Eskimo Dog",
+      "predicted_breed": "Siberian Husky",
+      "confusion_count": 10
+    },
+    {
+      "true_breed": "Shetland Sheepdog",
+      "predicted_breed": "Collie",
+      "confusion_count": 9
+    },
+    {
+      "true_breed": "American Staffordshire Terrier",
+      "predicted_breed": "Staffordshire Bullterrier",
+      "confusion_count": 7
+    },
+    {
+      "true_breed": "Siberian Husky",
+      "predicted_breed": "Eskimo Dog",
+      "confusion_count": 6
+    },
+    {
+      "true_breed": "Australian Terrier",
+      "predicted_breed": "Silky Terrier",
+      "confusion_count": 5
+    },
+    {
+      "true_breed": "Cardigan",
+      "predicted_breed": "Pembroke",
+      "confusion_count": 5
+    },
+    {
+      "true_breed": "Collie",
+      "predicted_breed": "Border Collie",
+      "confusion_count": 5
+    },
+    {
+      "true_breed": "Entlebucher",
+      "predicted_breed": "Appenzeller",
+      "confusion_count": 5
+    },
+    {
+      "true_breed": "Redbone",
+      "predicted_breed": "Rhodesian Ridgeback",
+      "confusion_count": 5
+    },
+    {
+      "true_breed": "Irish Wolfhound",
+      "predicted_breed": "Scottish Deerhound",
+      "confusion_count": 4
+    }
+  ]
+}
