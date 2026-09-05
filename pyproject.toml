@@ -1,0 +1,36 @@
+[project]
+name = "dog-breed-classification"
+version = "0.1.0"
+description = "Dog Breed Classification on Stanford Dogs Dataset with Transfer Learning, Grad-CAM, and Apple Metal GPU acceleration"
+readme = "README.md"
+authors = [
+    { name = "AtulPahal", email = "atulpahal@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "gradio>=6.26.0",
+    "ipykernel>=7.3.0",
+    "jupyter>=1.1.1",
+    "kaggle>=2.2.4",
+    "matplotlib>=3.11.1",
+    "onnx<=1.17.0",
+    "onnxruntime>=1.29.0",
+    "pandas>=2.3.3",
+    "pillow>=12.3.0",
+    "rich>=15.0.0",
+    "scikit-learn>=1.9.0",
+    "scipy>=1.17.1",
+    "seaborn>=0.13.2",
+    "tensorflow==2.16.2",
+    "tensorflow-macos>=2.16.2",
+    "tensorflow-metal>=1.2.0",
+    "tf2onnx>=1.17.0",
+]
+
+[project.scripts]
+dog-breed = "dog_breed_classification.cli:main"
+dog-breed-classification = "dog_breed_classification.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
