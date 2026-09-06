@@ -252,23 +252,42 @@ body, .gradio-container {
 .hero-header {
     text-align: center;
     margin-bottom: 24px;
-    padding-bottom: 16px;
+    padding: 8px 0 20px 0;
     border-bottom: 1px solid #27272a;
 }
 
+.hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a1a1aa;
+    background: #18181b;
+    border: 1px solid #27272a;
+    padding: 3px 12px;
+    border-radius: 9999px;
+    margin-bottom: 10px;
+}
+
 .hero-header h1 {
-    font-size: 26px !important;
+    font-size: 30px !important;
     font-weight: 700 !important;
-    margin: 0 0 6px 0 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.25 !important;
+    margin: 0 0 8px 0 !important;
     color: #ffffff !important;
 }
 
 .hero-header p {
     font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
     color: #a1a1aa !important;
-    margin: 0 !important;
+    letter-spacing: -0.01em !important;
+    margin: 0 auto !important;
+    max-width: 620px !important;
 }
-
 .gradio-container .prose * {
     color: #f4f4f5 !important;
 }
@@ -279,12 +298,13 @@ def build_gradio_app() -> gr.Blocks:
     """Constructs the clean, simple Gradio application UI."""
     sample_examples = get_sample_example_images(6)
 
-    with gr.Blocks(title="Dog Breed Classifier & Grad-CAM") as demo:
+    with gr.Blocks(title="Dog Breed Classification") as demo:
         gr.HTML(
             """
         <div class="hero-header">
-            <h1>Dog Breed Classification & Visual Explainability</h1>
-            <p>Fine-Grained Classification across 120 Dog Breeds (Stanford Dogs Dataset) with Grad-CAM Attention Heatmaps</p>
+            <div class="hero-tag">Stanford Dogs Dataset &bull; 120 Breeds</div>
+            <h1>Dog Breed Classification</h1>
+            <p>Fine-grained image classification powered by transfer learning and Grad-CAM visual attention mapping</p>
         </div>
         """
         )
