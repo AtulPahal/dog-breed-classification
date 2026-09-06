@@ -252,22 +252,8 @@ body, .gradio-container {
 .hero-header {
     text-align: center;
     margin-bottom: 24px;
-    padding: 8px 0 20px 0;
+    padding: 6px 0 18px 0;
     border-bottom: 1px solid #27272a;
-}
-
-.hero-tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #a1a1aa;
-    background: #18181b;
-    border: 1px solid #27272a;
-    padding: 3px 12px;
-    border-radius: 9999px;
-    margin-bottom: 10px;
 }
 
 .hero-header h1 {
@@ -302,9 +288,8 @@ def build_gradio_app() -> gr.Blocks:
         gr.HTML(
             """
         <div class="hero-header">
-            <div class="hero-tag">Stanford Dogs Dataset &bull; 120 Breeds</div>
             <h1>Dog Breed Classification</h1>
-            <p>Fine-grained image classification powered by transfer learning and Grad-CAM visual attention mapping</p>
+            <p>Fine-grained classification across 120 dog breeds with Grad-CAM</p>
         </div>
         """
         )
