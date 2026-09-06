@@ -1,7 +1,7 @@
 """Interactive Gradio Web Application for Dog Breed Classification and Visual Explainability.
 
-Implements a responsive, mobile-first Bento Grid interface with semantic layout,
-strict typography standards, and zero emojis.
+Provides a clean, simple, neutral dark interface with zero emojis, responsive layout,
+and support for both Apple Metal GPU (TensorFlow) and CoreML (ONNX Runtime) engines.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from dog_breed_classification.config import (
 )
 from dog_breed_classification.predict import DogBreedPredictor
 
-# Breed characteristics database for educational UI context
+# Breed characteristics database for educational context
 BREED_INFO_DATABASE = {
     "Chihuahua": {
         "group": "Toy",
@@ -157,36 +157,16 @@ def classify_dog_image(
     gradcam_alpha: float,
     colormap_name: str,
 ) -> Tuple[Dict[str, float], Optional[Image.Image], str, str]:
-    """Core inference handler for Gradio UI.
-
-    Args:
-        image: User uploaded image.
-        model_name: Selected model architecture.
-        runtime: Selected execution engine (TensorFlow or ONNX).
-        top_k: Number of predictions to return.
-        enable_gradcam: Whether to render Grad-CAM heatmap.
-        gradcam_alpha: Heatmap overlay blending factor.
-        colormap_name: Color scheme for Grad-CAM.
-
-    Returns:
-        Tuple of (label_dict, gradcam_image, top_badge_html, breed_info_html).
-    """
+    """Core inference handler for Gradio UI."""
     if image is None:
         placeholder_badge = """
-        <div class="bento-badge-card empty-state">
-            <span class="badge-tag">Status</span>
-            <div class="badge-title">Awaiting Input</div>
-            <div class="badge-sub">Upload or select a dog photo to classify.</div>
+        <div style="background: #18181b; border: 1px solid #27272a; padding: 16px 20px; border-radius: 10px; margin-bottom: 12px;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; font-weight: 600;">Status</div>
+            <div style="font-size: 18px; font-weight: 600; color: #f4f4f5; margin-top: 2px;">Awaiting Image Input</div>
+            <div style="font-size: 13px; color: #a1a1aa; margin-top: 2px;">Upload or select a dog photo to classify.</div>
         </div>
         """
-        placeholder_info = """
-        <div class="bento-info-card empty-state">
-            <div class="info-row"><span class="info-label">AKC Group</span><span class="info-val">-</span></div>
-            <div class="info-row"><span class="info-label">Origin</span><span class="info-val">-</span></div>
-            <div class="info-row"><span class="info-label">Temperament</span><span class="info-val">-</span></div>
-            <div class="info-row"><span class="info-label">Life Span</span><span class="info-val">-</span></div>
-        </div>
-        """
+        placeholder_info = "### Breed Profile\nUpload or select an image to view breed characteristics."
         return {}, None, placeholder_badge, placeholder_info
 
     predictor = get_cached_predictor(model_name, runtime=runtime)
@@ -210,21 +190,21 @@ def classify_dog_image(
     # 2. Grad-CAM visual
     gradcam_img = result.get("gradcam_overlay", None)
 
-    # 3. Top Prediction Highlight Badge
+    # 3. Top Prediction Highlight Badge (neutral dark with green confidence)
     top_breed = result["top_breed"]
     top_conf = result["top_percentage"]
     badge_html = f"""
-    <div class="bento-badge-card active-state">
-        <div class="badge-header">
-            <span class="badge-tag">Top Classification</span>
-            <span class="badge-conf-pill">{top_conf} Confidence</span>
+    <div style="background: #18181b; border: 1px solid #27272a; padding: 18px 20px; border-radius: 10px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; font-weight: 600;">Top Prediction</div>
+            <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; padding: 2px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600;">Confidence: {top_conf}</div>
         </div>
-        <div class="badge-title">{top_breed}</div>
-        <div class="badge-sub">Evaluated across 120 Stanford Dogs classes</div>
+        <div style="font-size: 24px; font-weight: 700; color: #ffffff; margin-top: 6px;">{top_breed}</div>
+        <div style="font-size: 12px; color: #71717a; margin-top: 2px;">Evaluated across 120 Stanford Dogs classes</div>
     </div>
     """
 
-    # 4. Breed Info & Facts Card
+    # 4. Breed Info & Facts
     info = BREED_INFO_DATABASE.get(
         top_breed,
         {
@@ -234,286 +214,97 @@ def classify_dog_image(
             "life_span": "10-14 years",
         },
     )
-    info_html = f"""
-    <div class="bento-info-card active-state">
-        <div class="info-title">Breed Profile: {top_breed}</div>
-        <div class="info-grid">
-            <div class="info-row"><span class="info-label">AKC Group</span><span class="info-val">{info['group']}</span></div>
-            <div class="info-row"><span class="info-label">Origin</span><span class="info-val">{info['origin']}</span></div>
-            <div class="info-row"><span class="info-label">Temperament</span><span class="info-val">{info['temperament']}</span></div>
-            <div class="info-row"><span class="info-label">Life Span</span><span class="info-val">{info['life_span']}</span></div>
-        </div>
-    </div>
+    info_md = f"""
+### Breed Profile: {top_breed}
+- **AKC Group:** {info['group']}
+- **Origin:** {info['origin']}
+- **Temperament:** {info['temperament']}
+- **Average Life Span:** {info['life_span']}
     """
 
-    return label_dict, gradcam_img, badge_html, info_html
+    return label_dict, gradcam_img, badge_html, info_md
 
 
-BENTO_CUSTOM_CSS = """
-/* Reset and Global Container */
-:root {
-    --bento-bg: #0f172a;
-    --bento-card-bg: rgba(30, 41, 59, 0.7);
-    --bento-card-border: rgba(255, 255, 255, 0.08);
-    --bento-accent: #3b82f6;
-    --bento-accent-glow: rgba(59, 130, 246, 0.15);
-    --bento-text-main: #f8fafc;
-    --bento-text-muted: #94a3b8;
-    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif;
+# Neutral dark CSS: charcoal/zinc (#09090b / #18181b), zero dark-blue tint
+NEUTRAL_DARK_CSS = """
+:root, .dark, body {
+    --background-fill-primary: #09090b !important;
+    --background-fill-secondary: #121215 !important;
+    --block-background-fill: #141416 !important;
+    --block-border-color: #27272a !important;
+    --border-color-primary: #27272a !important;
+    --body-text-color: #f4f4f5 !important;
+    --body-text-color-subdued: #a1a1aa !important;
+    --input-background-fill: #18181b !important;
+    background-color: #09090b !important;
+    color: #f4f4f5 !important;
 }
 
 body, .gradio-container {
-    font-family: var(--font-sans) !important;
-    max-width: 1380px !important;
+    max-width: 1240px !important;
     margin: 0 auto !important;
-    padding: 12px 16px !important;
-    background-color: var(--bento-bg) !important;
-    color: var(--bento-text-main) !important;
+    padding: 16px 20px !important;
+    background-color: #09090b !important;
+    color: #f4f4f5 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 
-/* Header & System Status Bar */
-.bento-header {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
-    padding: 18px 24px;
-    background: var(--bento-card-bg);
-    border: 1px solid var(--bento-card-border);
-    border-radius: 14px;
-    backdrop-filter: blur(12px);
+.hero-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #27272a;
 }
 
-@media (min-width: 768px) {
-    .bento-header {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-}
-
-.bento-header-left h1 {
-    font-size: 20px !important;
+.hero-header h1 {
+    font-size: 26px !important;
     font-weight: 700 !important;
-    letter-spacing: -0.02em;
-    margin: 0 !important;
+    margin: 0 0 6px 0 !important;
     color: #ffffff !important;
 }
 
-.bento-header-left p {
-    font-size: 13px !important;
-    color: var(--bento-text-muted) !important;
-    margin: 4px 0 0 0 !important;
-}
-
-.bento-header-right {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.status-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #e2e8f0;
-}
-
-.status-pill.highlight {
-    background: var(--bento-accent-glow);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #60a5fa;
-}
-
-/* Bento Cards */
-.bento-card {
-    background: var(--bento-card-bg) !important;
-    border: 1px solid var(--bento-card-border) !important;
-    border-radius: 14px !important;
-    padding: 16px !important;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(12px) !important;
-}
-
-.bento-card-header {
-    font-size: 11px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    font-weight: 700 !important;
-    color: var(--bento-text-muted) !important;
-    margin-bottom: 12px !important;
-}
-
-/* Prediction Badge */
-.bento-badge-card {
-    padding: 18px 20px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 14px;
-}
-
-.bento-badge-card.active-state {
-    background: linear-gradient(135deg, rgba(30, 58, 138, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
-.badge-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.badge-tag {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #94a3b8;
-}
-
-.badge-conf-pill {
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #4ade80;
-    padding: 2px 8px;
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.badge-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: -0.01em;
-}
-
-.badge-sub {
-    font-size: 12px;
-    color: #94a3b8;
-    margin-top: 2px;
-}
-
-/* Info Card */
-.bento-info-card {
-    padding: 16px;
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.info-title {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #cbd5e1;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.info-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 13px;
-}
-
-.info-label {
-    color: #64748b;
-    font-weight: 600;
-}
-
-.info-val {
-    color: #f1f5f9;
-    font-weight: 600;
-    text-align: right;
-}
-
-/* Button Styling */
-button.primary-action-btn {
-    background: #2563eb !important;
-    border: none !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
+.hero-header p {
     font-size: 14px !important;
-    padding: 12px 20px !important;
-    color: #ffffff !important;
-    transition: all 0.15s ease-in-out !important;
+    color: #a1a1aa !important;
+    margin: 0 !important;
 }
 
-button.primary-action-btn:hover {
-    background: #1d4ed8 !important;
+.gradio-container .prose * {
+    color: #f4f4f5 !important;
 }
 """
 
 
 def build_gradio_app() -> gr.Blocks:
-    """Constructs the semantic Bento Grid Gradio application."""
+    """Constructs the clean, simple Gradio application UI."""
     sample_examples = get_sample_example_images(6)
 
     with gr.Blocks(title="Dog Breed Classifier & Grad-CAM") as demo:
-        # 1. Bento Top Header & Telemetry Bar
         gr.HTML(
             """
-        <div class="bento-header">
-            <div class="bento-header-left">
-                <h1>Dog Breed Classification & Visual Explainability</h1>
-                <p>Stanford Dogs Dataset (120 Breeds) - Deep Transfer Learning & Explainable AI</p>
-            </div>
-            <div class="bento-header-right">
-                <span class="status-pill highlight">91.55% Top-1 Accuracy</span>
-                <span class="status-pill highlight">99.45% Top-5 Accuracy</span>
-                <span class="status-pill">Apple Metal GPU Active</span>
-                <span class="status-pill">CoreML ONNX Runtime</span>
-            </div>
+        <div class="hero-header">
+            <h1>Dog Breed Classification & Visual Explainability</h1>
+            <p>Fine-Grained Classification across 120 Dog Breeds (Stanford Dogs Dataset) with Grad-CAM Attention Heatmaps</p>
         </div>
         """
         )
 
-        # 2. Main Bento Grid (2-Column Responsive Layout)
-        with gr.Row(equal_height=False):
-            # Left Bento Column: Input, Examples, and Inference Controls
-            with gr.Column(scale=5, elem_classes=["bento-card"]):
-                gr.HTML('<div class="bento-card-header">Input Source</div>')
-
+        with gr.Row():
+            # Left Column: Inputs & Controls
+            with gr.Column(scale=5):
                 image_input = gr.Image(
                     type="pil",
-                    label="Image Upload or Capture",
+                    label="Upload Dog Photo",
                     sources=["upload", "clipboard", "webcam"],
-                    elem_classes=["input-image-box"],
                 )
 
                 classify_btn = gr.Button(
-                    "Execute Classification",
+                    "Identify Dog Breed",
                     variant="primary",
-                    elem_classes=["primary-action-btn"],
+                    size="lg",
                 )
 
-                if sample_examples:
-                    gr.Examples(
-                        examples=sample_examples,
-                        inputs=image_input,
-                        label="Dataset Reference Samples",
-                    )
-
-                with gr.Accordion("Inference Engine & Model Parameters", open=False):
+                with gr.Accordion("Model & Explainability Settings", open=False):
                     runtime_selector = gr.Radio(
                         choices=["TensorFlow (Metal GPU)", "ONNX Runtime (CoreML Accelerated)"],
                         value="TensorFlow (Metal GPU)",
@@ -522,25 +313,27 @@ def build_gradio_app() -> gr.Blocks:
                     model_selector = gr.Dropdown(
                         choices=SUPPORTED_BACKBONES,
                         value="efficientnetv2_s",
-                        label="Architecture",
+                        label="Model Architecture",
+                        info="Pre-trained backbones fine-tuned on Stanford Dogs",
                     )
                     top_k_slider = gr.Slider(
                         minimum=1,
                         maximum=10,
                         value=5,
                         step=1,
-                        label="Top-K Ranks",
+                        label="Top-K Predictions",
                     )
                     enable_gradcam = gr.Checkbox(
                         value=True,
-                        label="Compute Grad-CAM Attention Heatmap",
+                        label="Enable Grad-CAM Explainability",
+                        info="Generates visual heatmap showing image regions the model focused on (TensorFlow mode)",
                     )
                     gradcam_alpha = gr.Slider(
                         minimum=0.1,
                         maximum=0.9,
                         value=0.45,
                         step=0.05,
-                        label="Grad-CAM Overlay Blend (Alpha)",
+                        label="Heatmap Blend Opacity (Alpha)",
                     )
                     colormap_selector = gr.Dropdown(
                         choices=["jet", "inferno", "magma", "viridis", "plasma"],
@@ -548,45 +341,41 @@ def build_gradio_app() -> gr.Blocks:
                         label="Heatmap Colormap",
                     )
 
-            # Right Bento Column: Verdict, Probability Distribution, Grad-CAM, & Profile
-            with gr.Column(scale=6, elem_classes=["bento-card"]):
-                gr.HTML('<div class="bento-card-header">Classification Output</div>')
+                if sample_examples:
+                    gr.Examples(
+                        examples=sample_examples,
+                        inputs=image_input,
+                        label="Example Dogs from Dataset",
+                    )
 
+            # Right Column: Outputs & Insights
+            with gr.Column(scale=6):
                 badge_output = gr.HTML(
                     """
-                <div class="bento-badge-card empty-state">
-                    <span class="badge-tag">Status</span>
-                    <div class="badge-title">Awaiting Input</div>
-                    <div class="badge-sub">Upload or select a dog photo to classify.</div>
+                <div style="background: #18181b; border: 1px solid #27272a; padding: 16px 20px; border-radius: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; font-weight: 600;">Status</div>
+                    <div style="font-size: 18px; font-weight: 600; color: #f4f4f5; margin-top: 2px;">Awaiting Image Input</div>
+                    <div style="font-size: 13px; color: #a1a1aa; margin-top: 2px;">Upload or select a dog photo to classify.</div>
                 </div>
                 """
                 )
 
                 label_output = gr.Label(
                     num_top_classes=5,
-                    label="Ranked Class Probabilities",
+                    label="Prediction Probabilities",
                 )
 
-                gr.HTML('<div class="bento-card-header" style="margin-top: 16px;">Grad-CAM Visual Attention</div>')
                 gradcam_output = gr.Image(
                     type="pil",
-                    label="Spatial Attention Heatmap",
+                    label="Grad-CAM Visual Attention",
                     interactive=False,
                 )
 
-                gr.HTML('<div class="bento-card-header" style="margin-top: 16px;">Breed Characteristics</div>')
-                info_output = gr.HTML(
-                    """
-                <div class="bento-info-card empty-state">
-                    <div class="info-row"><span class="info-label">AKC Group</span><span class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-label">Origin</span><span class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-label">Temperament</span><span class="info-val">-</span></div>
-                    <div class="info-row"><span class="info-label">Life Span</span><span class="info-val">-</span></div>
-                </div>
-                """
+                info_output = gr.Markdown(
+                    """### Breed Profile\nUpload or select an image to view breed characteristics."""
                 )
 
-        # 3. Bind Event Listeners
+        # Connect event triggers
         classify_btn.click(
             fn=classify_dog_image,
             inputs=[
@@ -624,14 +413,16 @@ def launch_app(
     share: bool = False,
     inbrowser: bool = True,
 ):
-    """Launches the Gradio web server."""
+    """Launches the Gradio web server with clean neutral dark theme."""
+    theme = gr.themes.Default(neutral_hue="zinc")
     app = build_gradio_app()
     app.launch(
         server_name=server_name,
         server_port=server_port,
         share=share,
         inbrowser=inbrowser,
-        css=BENTO_CUSTOM_CSS,
+        theme=theme,
+        css=NEUTRAL_DARK_CSS,
     )
 
 
