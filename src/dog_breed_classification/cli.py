@@ -43,15 +43,14 @@ def command_info(args: argparse.Namespace) -> None:
     """Displays hardware, dataset, and environment diagnostics."""
     console.print(
         Panel.fit(
-            "[bold cyan]🐕 Stanford Dogs Breed Classification[/bold cyan]\n"
+            "[bold cyan]Stanford Dogs Breed Classification[/bold cyan]\n"
             "[dim]Fine-Grained Classification with Transfer Learning & Apple Silicon Metal GPU[/dim]",
             border_style="cyan",
         )
     )
 
     # Hardware & System Table
-    sys_table = Table(title="💻 System & Hardware Environment", border_style="blue")
-    sys_table.add_column("Property", style="bold yellow")
+    sys_table = Table(title="System & Hardware Environment", border_style="blue")
     sys_table.add_column("Value", style="green")
 
     sys_table.add_row("Python Version", sys.version.split()[0])
@@ -72,7 +71,7 @@ def command_info(args: argparse.Namespace) -> None:
         df = load_dataset_index()
         summary = get_dataset_summary(df)
 
-        data_table = Table(title="📊 Stanford Dogs Dataset Summary", border_style="magenta")
+        data_table = Table(title="Stanford Dogs Dataset Summary", border_style="magenta")
         data_table.add_column("Metric", style="bold yellow")
         data_table.add_column("Count / Value", style="cyan")
 
@@ -111,7 +110,7 @@ def command_train(args: argparse.Namespace) -> None:
         console.print(f"Phase 2: {config.fine_tune_epochs} epochs @ lr={config.fine_tune_lr}")
 
     train_model(config=config, verbose=1)
-    console.print("[bold green]✅ Training completed successfully![/]")
+    console.print("[bold green]Training completed successfully![/]")
 
 
 def command_evaluate(args: argparse.Namespace) -> None:
@@ -139,7 +138,7 @@ def command_evaluate(args: argparse.Namespace) -> None:
         batch_size=args.batch_size,
     )
 
-    res_table = Table(title="🏆 Model Evaluation Summary", border_style="green")
+    res_table = Table(title="Model Evaluation Summary", border_style="green")
     res_table.add_column("Metric", style="bold yellow")
     res_table.add_column("Score", style="cyan")
 
@@ -164,7 +163,7 @@ def command_export_onnx(args: argparse.Namespace) -> None:
         opset=args.opset,
         verbose=True,
     )
-    console.print(f"[bold green]✅ ONNX model successfully saved to:[/] [cyan]{out_path}[/]")
+    console.print(f"[bold green]ONNX model successfully saved to:[/] [cyan]{out_path}[/]")
 
 
 def command_predict(args: argparse.Namespace) -> None:
@@ -202,7 +201,7 @@ def command_predict(args: argparse.Namespace) -> None:
         Panel.fit(
             f"[bold green]Top Prediction:[/] [bold yellow]{result['top_breed']}[/bold yellow]\n"
             f"[bold cyan]Confidence:[/] [bold white]{result['top_percentage']}[/bold white]",
-            title="🐾 Classification Result",
+            title="Classification Result",
             border_style="green",
         )
     )
