@@ -1,4 +1,4 @@
-# Dog Breed Classification & Visual Explainability (Grad-CAM) 
+# Dog Breed Classification & Visual Explainability (Grad-CAM)
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.16-FF6F00?style=flat&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
